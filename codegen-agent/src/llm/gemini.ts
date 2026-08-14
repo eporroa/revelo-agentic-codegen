@@ -2,7 +2,7 @@ import { GoogleGenAI } from "@google/genai";
 import type { LLMProvider, LLMResponse } from "./types.js";
 import { MissingApiKeyError } from "./types.js";
 
-const DEFAULT_MODEL = "gemini-2.5-pro";
+const DEFAULT_MODEL = "gemini-flash-latest";
 
 export function createGeminiProvider(
   model: string = DEFAULT_MODEL

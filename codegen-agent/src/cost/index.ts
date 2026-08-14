@@ -11,6 +11,10 @@ import { logPath } from "../tools/runLog.js";
 const PRICING_PER_1K_TOKENS: Record<string, { input: number; output: number }> = {
   "claude-sonnet-4-5": { input: 0.003, output: 0.015 },
   "claude-opus-4-1": { input: 0.015, output: 0.075 },
+  "gemini-pro-latest": { input: 0.00125, output: 0.005 },
+  "gemini-flash-latest": { input: 0.0003, output: 0.0025 },
+  "gemini-flash-lite-latest": { input: 0.0001, output: 0.0004 },
+  // Superseded model ids kept for reports generated before a pricing update.
   "gemini-2.5-pro": { input: 0.00125, output: 0.005 },
   "gemini-2.5-flash": { input: 0.000075, output: 0.0003 },
 };
