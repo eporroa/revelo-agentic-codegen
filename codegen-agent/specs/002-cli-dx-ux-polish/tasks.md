@@ -63,12 +63,16 @@ and editable when supplied via flag, prompted when missing.
 
 ### Tests for User Story 1
 
-- [ ] T006 [P] [US1] Unit test: `missingFields()` correctly identifies which of
+- [X] T006 [P] [US1] Unit test: `missingFields()` correctly identifies which of
       spec/boilerplate/out are absent from a `FlagInputs` object, in
       `tests/unit/collectInputs.test.ts`
-- [ ] T007 [P] [US1] Unit test: `shouldPromptInteractively()` returns `false` only when
+- [X] T007 [P] [US1] Unit test: `shouldPromptInteractively()` returns `false` only when
       `isTTY` is false **and** every field is present; `true` in every other case, in
-      `tests/unit/collectInputs.test.ts`
+      `tests/unit/collectInputs.test.ts`. Surfaced a real gap: Vite/Vitest doesn't read
+      tsconfig.json's `paths` on its own — added `resolve.alias` to vitest.config.ts (anchored
+      to `@/` via regex, not bare `@`, so scoped packages like `@clack/prompts` aren't
+      accidentally matched). Not a task in the original plan; necessary for any `@/`-importing
+      test to run at all.
 
 ### Implementation for User Story 1
 
