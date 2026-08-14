@@ -32,18 +32,18 @@ package root (this repo's root — not nested under `specs/`).
 
 **Purpose**: Project initialization
 
-- [ ] T001 Create project skeleton directories per plan.md Project Structure
+- [X] T001 Create project skeleton directories per plan.md Project Structure
       (`src/{planner,llm,tools,generator,validator,reporter,prompts,cost}`,
       `tests/{unit,integration,fixtures}`) in `codegen-agent/`
-- [ ] T002 Initialize `codegen-agent/package.json`: `type: module`, scripts (`build`, `dev`,
+- [X] T002 Initialize `codegen-agent/package.json`: `type: module`, scripts (`build`, `dev`,
       `typecheck`, `test`, `test:e2e`), dependencies (`commander`, `dotenv`, `zod`,
       `@anthropic-ai/sdk`, `@google/genai`), devDependencies (`typescript`, `vitest`,
       `@types/node`, `tsx`)
-- [ ] T003 [P] Configure `codegen-agent/tsconfig.json` (strict TypeScript 5.7, Node 20 target,
+- [X] T003 [P] Configure `codegen-agent/tsconfig.json` (strict TypeScript 5.7, Node 20 target,
       matching the boilerplate's own strictness conventions per research.md)
-- [ ] T004 [P] Configure `codegen-agent/vitest.config.ts` covering both `tests/unit` and
+- [X] T004 [P] Configure `codegen-agent/vitest.config.ts` covering both `tests/unit` and
       `tests/integration`
-- [ ] T005 [P] Add `codegen-agent/.env.example` documenting `LLM_PROVIDER`, `LLM_MODEL`,
+- [X] T005 [P] Add `codegen-agent/.env.example` documenting `LLM_PROVIDER`, `LLM_MODEL`,
       `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`
 
 ---
