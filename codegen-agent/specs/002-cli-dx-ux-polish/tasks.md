@@ -117,8 +117,11 @@ and editable when supplied via flag, prompted when missing.
 
 ### Implementation for User Story 2
 
-- [ ] T013 [P] [US2] Implement the `@clack/prompts`-backed `ProgressReporter` (a spinner per
-      phase/task, `log.step` for repair attempts) in `src/ui/progress.ts` (depends on: T003)
+- [X] T013 [P] [US2] Implement the `@clack/prompts`-backed `ProgressReporter` in
+      `src/ui/progress.ts` (depends on: T003). Adjusted from plan.md: one reusable spinner for
+      the active task (safe since tasks run strictly sequentially); phase transitions and
+      repair attempts are plain `log.*` status lines, not spinners — neither has a clean
+      spinner-shaped single start/stop boundary of its own.
 - [ ] T014 [US2] Call `progress.taskStart`/`taskEnd` around each task in
       `src/generator/index.ts`'s `generateTask` (depends on: T005, T011, T012)
 - [ ] T015 [US2] Call `progress.repairAttempt` in `src/validator/index.ts`'s repair loop
