@@ -8,6 +8,12 @@
 
 **Input**: User description: "codegen-cli DX and UX enhancements, based on the information from the spec 001-codegen-agent-cli, let's update the application with some enhancements for the UI of the CLI and how the code can be improved: (1) using tsconfig path aliases (@/* -> src/*) throughout the codebase instead of relative imports; (2) using @clack/prompts to interactively confirm or collect --spec/--boilerplate/--out — pre-filled from flags when supplied, prompted when missing; (3) a live UI showing which phase/task the agent is currently on, with loading indicators and status messages; (4) verify no OpenAI references remain anywhere in the codegen-agent app."
 
+## Clarifications
+
+### Session 2026-08-14
+
+- Q: When a flag's value is pre-filled into its confirmation prompt, can the developer edit it, or is it accept-only? → A: Pre-filled by default (the "autocomplete" behavior), but the developer can edit the value before confirming if it's wrong.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Confirm inputs before spending tokens (Priority: P1)
@@ -32,8 +38,9 @@ shows a single confirmation step (not a silent pass-through) before PLAN starts.
    `--boilerplate`, and `--out` one at a time, and does not begin PLAN until all three are
    provided or the developer cancels.
 2. **Given** all three flags are passed on the command line, **When** the CLI starts, **Then**
-   it displays the resolved values, pre-filled as the default answer, and requires a single
-   confirmation before continuing — it does not skip straight into PLAN.
+   it displays the resolved values, pre-filled as the default answer that the developer can
+   edit if it's wrong, and requires a single confirmation before continuing — it does not skip
+   straight into PLAN.
 3. **Given** some flags are passed and others aren't, **When** the CLI starts, **Then** it only
    prompts for the missing ones, while still showing the supplied ones for confirmation.
 4. **Given** the developer cancels at the confirmation step, **When** that happens, **Then** the
@@ -117,8 +124,9 @@ only appears in the context of explaining it is *not* supported.
 - **FR-002**: For any required input not supplied via flag, the CLI MUST prompt for it
   interactively before proceeding.
 - **FR-003**: For any required input that was supplied via flag, the CLI MUST still display it,
-  pre-filled as the default answer, and require one explicit confirmation before proceeding —
-  never silently trusting a flag value without showing it back to the developer.
+  pre-filled as the default, editable answer, and require one explicit confirmation before
+  proceeding — never silently trusting a flag value without showing it back to the developer,
+  and never locking it from being corrected if it's wrong.
 - **FR-004**: The CLI MUST NOT begin PLAN until all three required inputs are confirmed.
 - **FR-005**: If the developer cancels the interactive flow at any point, the CLI MUST exit
   without writing anything to `--out` and without making any LLM call.
@@ -164,12 +172,9 @@ only appears in the context of explaining it is *not* supported.
 
 ## Assumptions
 
-- **"Autocomplete" is interpreted as "pre-filled default answer, confirmed with Enter"** — not
-  filesystem path autocompletion. A flag's value becomes the prompt's default text, which the
-  developer accepts (Enter) or overwrites, rather than a path-completion widget. This is a
-  judgment call on ambiguous wording; correct it via `/speckit-clarify` if a real filesystem
-  autocomplete/browse experience was actually intended, since that's a materially different (and
-  heavier) UI to build.
+- "Autocomplete" means a flag's value becomes the prompt's pre-filled, editable default — the
+  developer accepts it with Enter or overwrites it if it's wrong (confirmed in Clarifications
+  above) — not filesystem path autocompletion/browsing, which is out of scope.
 - Non-interactive detection uses whether an interactive terminal is attached (standard practice
   for CLI tools built on prompt libraries) — no new flag (e.g. `--yes`) is introduced; `--force`
   from spec 001 continues to govern destination-overwrite behavior only, unrelated to this
