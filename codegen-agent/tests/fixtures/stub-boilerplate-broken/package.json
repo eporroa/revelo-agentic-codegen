@@ -1,0 +1,9 @@
+{
+  "name": "stub-boilerplate-broken",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "typecheck": "node -e \"process.exit(0)\"",
+    "test": "node -e \"console.error('simulated failing test'); process.exit(1)\""
+  }
+}

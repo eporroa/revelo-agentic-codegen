@@ -99,9 +99,10 @@ working app in `--out`.
 
 > Write these tests first; confirm they fail before the implementation tasks below make them pass.
 
-- [ ] T019 [P] [US1] Create `tests/fixtures/stub-spec.txt` and
+- [X] T019 [P] [US1] Create `tests/fixtures/stub-spec.txt` and
       `tests/fixtures/stub-boilerplate/` (minimal `package.json` with stub `typecheck`/`test`
-      scripts) for use by all integration tests
+      scripts) for use by all integration tests. Also adds
+      `tests/fixtures/stub-boilerplate-broken/` (test script always fails), reused by T036.
 - [ ] T020 [P] [US1] Unit test: planner produces an ordered, dependency-respecting task graph
       from a stub spec, in `tests/unit/planner.test.ts`
 - [ ] T021 [P] [US1] Unit test: validator's repair loop stops at max 3 attempts per file and

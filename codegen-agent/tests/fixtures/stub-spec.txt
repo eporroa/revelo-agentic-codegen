@@ -1,0 +1,5 @@
+Build a small "Widget Board" app.
+
+Fetch a list of widgets via GraphQL (a GetWidgets query) and display each widget's name and
+count in a card. Include a search box that filters widgets by name. Extract the data-fetching
+logic into a useWidgets() hook.
