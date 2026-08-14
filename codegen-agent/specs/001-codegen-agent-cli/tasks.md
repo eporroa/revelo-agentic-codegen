@@ -117,13 +117,14 @@ working app in `--out`.
 
 ### Implementation for User Story 1
 
-- [ ] T023 [P] [US1] Implement `src/prompts/plan.ts` — structured planning prompt template
+- [X] T023 [P] [US1] Implement `src/prompts/plan.ts` — structured planning prompt template
       (spec text → task graph JSON matching the T006 zod schema)
-- [ ] T024 [P] [US1] Implement `src/prompts/generate.ts` — structured per-task generation
+- [X] T024 [P] [US1] Implement `src/prompts/generate.ts` — structured per-task generation
       prompt template (role + task + context block + target file's expected export signature +
       few-shot example drawn from the boilerplate's existing conventions + explicit "return
-      only the file contents" constraint)
-- [ ] T025 [P] [US1] Implement `src/prompts/repair.ts` — structured repair prompt template
+      only the file contents" constraint). Few-shot is style-only, no spec content (resolves
+      analyze finding A2).
+- [X] T025 [P] [US1] Implement `src/prompts/repair.ts` — structured repair prompt template
       (original task context + failing file + exact error output + "return a corrected full
       file")
 - [ ] T026 [US1] Implement `src/planner/index.ts`: spec text → `Task[]` via one scoped LLM call
