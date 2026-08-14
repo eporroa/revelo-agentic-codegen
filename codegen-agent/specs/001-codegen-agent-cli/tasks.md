@@ -188,10 +188,10 @@ tokens, and cost.
 **Independent Test**: quickstart.md Scenario 1 (clean success) and Scenario 3 (engineered
 residual failure) both read back correctly from `report.md`.
 
-- [ ] T033 [P] [US3] Unit test: reporter correctly aggregates `tasksCompleted`, `tasksFailed`,
+- [X] T033 [P] [US3] Unit test: reporter correctly aggregates `tasksCompleted`, `tasksFailed`,
       `filesWritten`, `tokenUsage`, and `estimatedCostUsd` from a synthetic run state, in
       `tests/unit/reporter.test.ts`
-- [ ] T034 [US3] Implement `src/reporter/index.ts`: builds the Run Report from `Task[]`, the
+- [X] T034 [US3] Implement `src/reporter/index.ts`: builds the Run Report from `Task[]`, the
       Run Log, and Validation Results; writes `<out>/.codegen-agent/report.md` (tasks, files,
       validation outcome, per-file repair-attempt counts, token usage, estimated cost) per
       data-model.md's Run Report (depends on: T016, T026, T027, T028)
