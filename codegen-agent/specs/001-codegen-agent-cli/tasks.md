@@ -54,9 +54,9 @@ package root (this repo's root — not nested under `specs/`).
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T006 [P] Define `Task`/`Plan`/`GenerationStep`/`ValidationResult`/`RunReport` types + zod
+- [X] T006 [P] Define `Task`/`Plan`/`GenerationStep`/`ValidationResult`/`RunReport` types + zod
       schemas in `src/planner/types.ts` (data-model.md)
-- [ ] T007 [P] Define the `LLMProvider`/`LLMUsage`/`LLMResponse` interface in
+- [X] T007 [P] Define the `LLMProvider`/`LLMUsage`/`LLMResponse` interface in
       `src/llm/types.ts` (contracts/llm-provider.md)
 - [ ] T008 [P] Implement the Claude provider in `src/llm/anthropic.ts` (implements
       `LLMProvider`, captures `usage.input_tokens`/`output_tokens`)
