@@ -16,6 +16,8 @@ import { validateAndRepair } from "./validator/index.js";
 import { buildReport, writeReport } from "./reporter/index.js";
 import { aggregateUsage, recordedCallsFromLog } from "./cost/index.js";
 import { collectInputs, type FlagInputs } from "@/ui/collectInputs.js";
+import { createClackProgressReporter, type ProgressReporter } from "@/ui/progress.js";
+import { noopProgressReporter } from "@/ui/noopProgress.js";
 
 export interface CliOptions {
   spec: string;
@@ -123,9 +125,16 @@ async function copyBoilerplate(options: CliOptions): Promise<void> {
   });
 }
 
-export async function run(argv: string[]): Promise<number> {
+export interface RunOverrides {
+  /** Test-only seam: inject a spy/fake ProgressReporter regardless of TTY state. */
+  progress?: ProgressReporter;
+}
+
+export async function run(argv: string[], overrides: RunOverrides = {}): Promise<number> {
   const flags = parseArgs(argv);
   const isTTY = process.stdin.isTTY === true;
+  const progress =
+    overrides.progress ?? (isTTY ? createClackProgressReporter() : noopProgressReporter);
 
   // User Story 1: prompt for whatever's missing, confirm (editable) whatever
   // was supplied via flag. Never runs at all for a fully-flagged, non-TTY
@@ -168,6 +177,7 @@ export async function run(argv: string[]): Promise<number> {
   }
 
   // PLAN — never enter GENERATE on a failed/empty plan (FR-005).
+  progress.phaseStart("plan");
   let plan;
   try {
     plan = await createPlan({
@@ -176,8 +186,10 @@ export async function run(argv: string[]): Promise<number> {
       specText,
       specPath: options.spec,
     });
+    progress.phaseEnd("plan", true);
   } catch (err) {
     if (err instanceof PlanningFailedError) {
+      progress.phaseEnd("plan", false);
       console.error(`codegen-agent: ${err.message}`);
       // FR-012 requires a report from every run, including one that never
       // reached GENERATE — record what planning spent before giving up.
@@ -207,27 +219,39 @@ export async function run(argv: string[]): Promise<number> {
   }
 
   // GENERATE
-  await generateAll(
-    { readFile: readFileTool, writeFile: writeFileTool, callLLM: callLLMTool },
-    plan
-  );
+  progress.phaseStart("generate");
+  try {
+    await generateAll(
+      { readFile: readFileTool, writeFile: writeFileTool, callLLM: callLLMTool, progress },
+      plan
+    );
+    progress.phaseEnd("generate", true);
+  } catch (err) {
+    progress.phaseEnd("generate", false);
+    throw err;
+  }
 
   // VALIDATE (+ bounded repair)
+  progress.phaseStart("validate");
   const validation = await validateAndRepair(
     {
       runShell: runShellTool,
       readFile: readFileTool,
       writeFile: writeFileTool,
       callLLM: callLLMTool,
+      progress,
     },
     plan
   );
+  progress.phaseEnd("validate", validation.typecheck.passed && validation.test.passed);
 
   // REPORT
+  progress.phaseStart("report");
   const recordedCalls = await recordedCallsFromLog(options.out);
   const { tokenUsage, estimatedCostUsd } = aggregateUsage(recordedCalls);
   const report = buildReport({ plan, validation, tokenUsage, estimatedCostUsd });
   await writeReport({ writeFile: writeFileTool }, report);
+  progress.phaseEnd("report", true);
 
   return report.exitCode; // FR-015
 }

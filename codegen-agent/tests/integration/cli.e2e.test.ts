@@ -3,6 +3,7 @@ import { mkdtemp, rm, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { LLMProvider, LLMResponse } from "../../src/llm/types.js";
+import type { ProgressReporter, Phase } from "../../src/ui/progress.js";
 
 // llm/ is mocked end-to-end: no real tokens are spent running this suite
 // (plan.md's Testing Approach). The fake provider recognizes which stage
@@ -187,5 +188,45 @@ describe("cli end-to-end (llm/ mocked)", () => {
     expect(reportMd).toContain("T1");
     expect(reportMd).toContain("Repair attempts used: 3");
     expect(reportMd).toContain("Exit code: 1");
+  });
+
+  it("reports phaseStart/phaseEnd for plan, generate, validate, report, in that order (US2)", async () => {
+    const { run } = await import("../../src/cli.js");
+    const outDir = await makeOutDir();
+
+    const events: string[] = [];
+    const progress: ProgressReporter = {
+      phaseStart: (phase: Phase) => events.push(`start:${phase}`),
+      phaseEnd: (phase: Phase, ok: boolean) => events.push(`end:${phase}:${ok}`),
+      taskStart: () => {},
+      taskEnd: () => {},
+      repairAttempt: () => {},
+    };
+
+    const exitCode = await run(
+      [
+        "node",
+        "cli.js",
+        "--spec",
+        join(FIXTURES_DIR, "stub-spec.txt"),
+        "--boilerplate",
+        join(FIXTURES_DIR, "stub-boilerplate"),
+        "--out",
+        outDir,
+      ],
+      { progress }
+    );
+
+    expect(exitCode).toBe(0);
+    expect(events).toEqual([
+      "start:plan",
+      "end:plan:true",
+      "start:generate",
+      "end:generate:true",
+      "start:validate",
+      "end:validate:true",
+      "start:report",
+      "end:report:true",
+    ]);
   });
 });
