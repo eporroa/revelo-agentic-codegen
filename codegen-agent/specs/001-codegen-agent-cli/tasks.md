@@ -58,11 +58,11 @@ package root (this repo's root — not nested under `specs/`).
       schemas in `src/planner/types.ts` (data-model.md)
 - [X] T007 [P] Define the `LLMProvider`/`LLMUsage`/`LLMResponse` interface in
       `src/llm/types.ts` (contracts/llm-provider.md)
-- [ ] T008 [P] Implement the Claude provider in `src/llm/anthropic.ts` (implements
+- [X] T008 [P] Implement the Claude provider in `src/llm/anthropic.ts` (implements
       `LLMProvider`, captures `usage.input_tokens`/`output_tokens`)
-- [ ] T009 [P] Implement the Gemini provider in `src/llm/gemini.ts` (implements
+- [X] T009 [P] Implement the Gemini provider in `src/llm/gemini.ts` (implements
       `LLMProvider`, captures `usageMetadata`)
-- [ ] T010 Implement the provider factory `getProvider()` in `src/llm/index.ts`, reading
+- [X] T010 Implement the provider factory `getProvider()` in `src/llm/index.ts`, reading
       `LLM_PROVIDER`/`LLM_MODEL` from `.env` and failing fast with a clear message on a
       missing/invalid API key (depends on: T007, T008, T009)
 - [ ] T011 [P] Implement the run log writer in `src/tools/runLog.ts` — appends one
