@@ -104,11 +104,16 @@ and editable when supplied via flag, prompted when missing.
 
 ### Tests for User Story 2
 
-- [ ] T011 [P] [US2] Unit test: a spy `ProgressReporter` receives `phaseStart`/`phaseEnd` for
-      plan, generate, validate, and report, in that order, in `tests/unit/progress.test.ts`
-- [ ] T012 [P] [US2] Unit test: a spy `ProgressReporter` receives `taskStart`/`taskEnd` for
+- [X] T011 [P] [US2] Unit test: a spy `ProgressReporter` receives `phaseStart`/`phaseEnd` for
+      plan, generate, validate, and report, in that order — **moved to
+      `tests/integration/cli.e2e.test.ts`**, written alongside T016. Phase-level reporting is
+      wired entirely inside `cli.ts`'s `run()` orchestration (plan has no injectable `progress`
+      per T005's correction), so it's only meaningfully testable at the full-run level, not as
+      an isolated unit.
+- [X] T012 [P] [US2] Unit test: a spy `ProgressReporter` receives `taskStart`/`taskEnd` for
       each task during `generateAll`, and `repairAttempt` during `validateAndRepair`'s repair
-      loop, in `tests/unit/progress.test.ts`
+      loop, in `tests/unit/progress.test.ts`. Confirmed red (both assertions failed with zero
+      calls) before T014/T015 implement the calls.
 
 ### Implementation for User Story 2
 
