@@ -1,6 +1,6 @@
-import type { Plan, RunReport, TokenUsageEntry } from "../planner/types.js";
-import type { ValidationOutcome } from "../validator/index.js";
-import type { WriteFileTool } from "../tools/writeFile.js";
+import type { Plan, RunReport, TokenUsageEntry } from "@/planner/types.js";
+import type { ValidationOutcome } from "@/validator/index.js";
+import type { WriteFileTool } from "@/tools/writeFile.js";
 
 export interface ReporterDeps {
   writeFile: WriteFileTool;

@@ -1,4 +1,4 @@
-import type { LLMProvider, LLMUsage } from "../llm/types.js";
+import type { LLMProvider, LLMUsage } from "@/llm/types.js";
 import type { RunLog } from "./runLog.js";
 import type { ToolResult } from "./types.js";
 

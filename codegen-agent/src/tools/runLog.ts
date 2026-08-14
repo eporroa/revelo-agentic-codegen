@@ -1,7 +1,7 @@
 import { mkdir, appendFile } from "node:fs/promises";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
-import type { GenerationStep, GenerationStepId } from "../planner/types.js";
+import type { GenerationStep, GenerationStepId } from "@/planner/types.js";
 
 /** `<out>/.codegen-agent/` — where plan.md, log.jsonl, and report.md all live. */
 export function runArtifactsDir(outDir: string): string {

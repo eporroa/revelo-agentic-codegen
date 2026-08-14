@@ -1,10 +1,10 @@
-import type { Plan, ValidationResult, RepairSummaryEntry } from "../planner/types.js";
-import { buildRepairPrompt } from "../prompts/repair.js";
-import { extractFileContents } from "../generator/index.js";
-import type { ReadFileTool } from "../tools/readFile.js";
-import type { WriteFileTool } from "../tools/writeFile.js";
-import type { CallLLMTool } from "../tools/callLLM.js";
-import type { RunShellTool } from "../tools/runShell.js";
+import type { Plan, ValidationResult, RepairSummaryEntry } from "@/planner/types.js";
+import { buildRepairPrompt } from "@/prompts/repair.js";
+import { extractFileContents } from "@/generator/index.js";
+import type { ReadFileTool } from "@/tools/readFile.js";
+import type { WriteFileTool } from "@/tools/writeFile.js";
+import type { CallLLMTool } from "@/tools/callLLM.js";
+import type { RunShellTool } from "@/tools/runShell.js";
 import type { ProgressReporter } from "@/ui/progress.js";
 
 export interface ValidatorDeps {

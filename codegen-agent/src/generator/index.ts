@@ -1,8 +1,8 @@
-import type { Plan, Task } from "../planner/types.js";
-import { buildGeneratePrompt } from "../prompts/generate.js";
-import type { ReadFileTool } from "../tools/readFile.js";
-import type { WriteFileTool } from "../tools/writeFile.js";
-import type { CallLLMTool } from "../tools/callLLM.js";
+import type { Plan, Task } from "@/planner/types.js";
+import { buildGeneratePrompt } from "@/prompts/generate.js";
+import type { ReadFileTool } from "@/tools/readFile.js";
+import type { WriteFileTool } from "@/tools/writeFile.js";
+import type { CallLLMTool } from "@/tools/callLLM.js";
 import type { ProgressReporter } from "@/ui/progress.js";
 
 export interface GeneratorDeps {

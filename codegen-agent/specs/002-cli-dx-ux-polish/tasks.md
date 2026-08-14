@@ -146,11 +146,12 @@ and editable when supplied via flag, prompted when missing.
 
 **Independent Test**: quickstart.md Scenarios 5–6.
 
-- [ ] T017 [P] [US3] Migrate every cross-directory relative import (`../...`) in `src/` to the
+- [X] T017 [P] [US3] Migrate every cross-directory relative import (`../...`) in `src/` to the
       `@/...` alias — `src/cost/index.ts`, `src/generator/index.ts`, `src/planner/index.ts`,
       `src/tools/callLLM.ts`, `src/tools/runLog.ts`, `src/tools/types.ts`,
       `src/reporter/index.ts`, `src/validator/index.ts` (the full list from the repo-wide grep
-      done during `/speckit-specify`)
+      done during `/speckit-specify`). Zero `../` cross-directory imports remain in `src/`;
+      typecheck, all 22 tests, and `npm run build` all still pass.
 - [ ] T018 [P] [US3] Migrate every relative import (`../../src/...`) in `tests/` to the
       `@/...` alias — `tests/unit/planner.test.ts`, `tests/unit/reporter.test.ts`,
       `tests/unit/validator.test.ts`, `tests/integration/cli.e2e.test.ts`

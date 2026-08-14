@@ -5,9 +5,9 @@ import {
   type PlannedTask,
   type Task,
 } from "./types.js";
-import { buildPlanPrompt } from "../prompts/plan.js";
-import type { CallLLMTool } from "../tools/callLLM.js";
-import type { WriteFileTool } from "../tools/writeFile.js";
+import { buildPlanPrompt } from "@/prompts/plan.js";
+import type { CallLLMTool } from "@/tools/callLLM.js";
+import type { WriteFileTool } from "@/tools/writeFile.js";
 
 export interface PlannerDeps {
   callLLM: CallLLMTool;
