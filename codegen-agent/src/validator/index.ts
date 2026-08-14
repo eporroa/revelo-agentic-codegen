@@ -97,6 +97,7 @@ export async function validateAndRepair(
       attempts++;
 
       for (const file of relevantFiles) {
+        deps.progress?.repairAttempt(task.id, file, task.repairAttempts, MAX_REPAIR_ATTEMPTS);
         let currentContents = "";
         try {
           currentContents = (await deps.readFile(task.id, file)).output.contents;

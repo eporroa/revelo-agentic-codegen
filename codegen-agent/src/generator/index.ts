@@ -52,6 +52,12 @@ async function gatherDependencyContext(
  * — validator/index.ts owns the final completed/failed verdict once
  * typecheck/test (and any repairs) have run, per the Task state machine
  * (data-model.md): repair happens without a separate visible task state.
+ *
+ * `progress.taskEnd`'s status here reflects only whether *generation*
+ * itself completed (the LLM call succeeded and the file was written) —
+ * not whether the generated code later passes validation. That's a
+ * different, later signal (validateAndRepair's repairAttempt/task.status),
+ * reported separately once it's actually known.
  */
 export async function generateTask(
   deps: GeneratorDeps,
@@ -59,20 +65,27 @@ export async function generateTask(
   task: Task
 ): Promise<void> {
   task.status = "in_progress";
-  const dependencyFileContents = await gatherDependencyContext(deps.readFile, plan, task);
+  deps.progress?.taskStart(task.id, task.description);
+  try {
+    const dependencyFileContents = await gatherDependencyContext(deps.readFile, plan, task);
 
-  for (const targetFile of task.targetFiles) {
-    const prompt = buildGeneratePrompt({
-      taskDescription: task.description,
-      targetFile,
-      dependencyFileContents,
-    });
-    const { output } = await deps.callLLM(
-      task.id,
-      prompt,
-      JSON.stringify(dependencyFileContents)
-    );
-    await deps.writeFile(task.id, targetFile, extractFileContents(output.text));
+    for (const targetFile of task.targetFiles) {
+      const prompt = buildGeneratePrompt({
+        taskDescription: task.description,
+        targetFile,
+        dependencyFileContents,
+      });
+      const { output } = await deps.callLLM(
+        task.id,
+        prompt,
+        JSON.stringify(dependencyFileContents)
+      );
+      await deps.writeFile(task.id, targetFile, extractFileContents(output.text));
+    }
+    deps.progress?.taskEnd(task.id, "completed");
+  } catch (err) {
+    deps.progress?.taskEnd(task.id, "failed");
+    throw err;
   }
 }
 

@@ -122,10 +122,13 @@ and editable when supplied via flag, prompted when missing.
       the active task (safe since tasks run strictly sequentially); phase transitions and
       repair attempts are plain `log.*` status lines, not spinners — neither has a clean
       spinner-shaped single start/stop boundary of its own.
-- [ ] T014 [US2] Call `progress.taskStart`/`taskEnd` around each task in
-      `src/generator/index.ts`'s `generateTask` (depends on: T005, T011, T012)
-- [ ] T015 [US2] Call `progress.repairAttempt` in `src/validator/index.ts`'s repair loop
-      (depends on: T005, T011, T012)
+- [X] T014 [US2] Call `progress.taskStart`/`taskEnd` around each task in
+      `src/generator/index.ts`'s `generateTask` (depends on: T005, T011, T012). `taskEnd`'s
+      status reflects whether generation itself succeeded, not final validation — a task that
+      generates fine but later fails validation still reports `taskEnd(id, "completed")` here.
+- [X] T015 [US2] Call `progress.repairAttempt` in `src/validator/index.ts`'s repair loop
+      (depends on: T005, T011, T012). Called once per file per round (matches the interface's
+      per-file signature) — T012 confirmed green.
 - [ ] T016 [US2] Call `progress.phaseStart`/`phaseEnd` around PLAN/GENERATE/VALIDATE/REPORT in
       `src/cli.ts`'s `run()`, constructing the real clack-backed reporter only when
       `process.stdin.isTTY`, otherwise the no-op (depends on: T013, T014, T015)
