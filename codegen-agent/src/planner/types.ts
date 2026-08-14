@@ -54,8 +54,13 @@ export const PlanSchema = z.object({
 });
 export type Plan = z.infer<typeof PlanSchema>;
 
-/** One logged, executed action (FR-006/FR-007). One JSON line in log.jsonl. */
+/**
+ * One logged, executed action (FR-006/FR-007). One JSON line in log.jsonl.
+ * `id` lets contracts/tools.md's `ToolResult.loggedAs` reference a specific
+ * line without re-reading the whole log (analyze finding I1).
+ */
 export const GenerationStepSchema = z.object({
+  id: z.string(),
   taskId: z.string(),
   tool: z.enum(["readFile", "writeFile", "runShell", "callLLM"]),
   input: z.unknown(),
@@ -63,6 +68,7 @@ export const GenerationStepSchema = z.object({
   timestamp: z.string(),
 });
 export type GenerationStep = z.infer<typeof GenerationStepSchema>;
+export type GenerationStepId = string;
 
 /** Outcome of one typecheck/test run (FR-009). */
 export interface ValidationResult {

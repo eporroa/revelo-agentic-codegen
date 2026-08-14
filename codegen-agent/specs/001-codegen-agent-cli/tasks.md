@@ -65,7 +65,7 @@ package root (this repo's root — not nested under `specs/`).
 - [X] T010 Implement the provider factory `getProvider()` in `src/llm/index.ts`, reading
       `LLM_PROVIDER`/`LLM_MODEL` from `.env` and failing fast with a clear message on a
       missing/invalid API key (depends on: T007, T008, T009)
-- [ ] T011 [P] Implement the run log writer in `src/tools/runLog.ts` — appends one
+- [X] T011 [P] Implement the run log writer in `src/tools/runLog.ts` — appends one
       `GenerationStep` JSON line to `<out>/.codegen-agent/log.jsonl` per call (depends on: T006)
 - [ ] T012 [P] Implement `src/tools/writeFile.ts` (writes a file, logs via `runLog`)
 - [ ] T013 [P] Implement `src/tools/readFile.ts` (reads a file, logs via `runLog`)
