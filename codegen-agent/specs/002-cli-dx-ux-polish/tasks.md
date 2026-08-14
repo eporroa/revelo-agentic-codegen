@@ -171,8 +171,9 @@ and editable when supplied via flag, prompted when missing.
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T021 Final validation pass: `npm run typecheck && npm test && npm run test:e2e` all
-      green — confirms zero behavior regression (SC-006)
+- [X] T021 Final validation pass: `npm run typecheck && npm test && npm run test:e2e` all
+      green — confirms zero behavior regression (SC-006). 17 unit + 5 integration = 22/22
+      passing; `npm run build` also clean.
 - [ ] T022 [P] Add a short README.md section describing the new interactive/progress UX
 - [ ] T023 Run quickstart.md Scenarios 1–4 manually against the real boilerplate to visually
       confirm the prompt/spinner UX — no automated test substitutes for actually watching the
