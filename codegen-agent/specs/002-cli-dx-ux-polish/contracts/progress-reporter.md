@@ -19,9 +19,13 @@ export interface ProgressReporter {
 
 ## Injection contract
 
-- `planner/index.ts`'s `PlannerDeps`, `generator/index.ts`'s `GeneratorDeps`, and
-  `validator/index.ts`'s `ValidatorDeps` each gain an **optional** `progress?: ProgressReporter`
-  field.
+- `generator/index.ts`'s `GeneratorDeps` and `validator/index.ts`'s `ValidatorDeps` each gain an
+  **optional** `progress?: ProgressReporter` field. `planner/index.ts` deliberately does **not**
+  — its bounded retry loop doesn't map onto `taskStart`/`taskEnd`/`repairAttempt`'s shapes
+  (neither a generated task nor a per-file repair), and PLAN is reported at the phase level only
+  (`cli.ts` wraps the whole `createPlan()` call with `phaseStart`/`phaseEnd`). Adding an unused
+  field to `PlannerDeps` would be dead code; this correction was made during `/speckit-implement`
+  (see spec 002's task T005).
 - When omitted, each module falls back to `noopProgressReporter` (`src/ui/noopProgress.ts`) — a
   `ProgressReporter` whose every method is a no-op. This is what spec 001's existing unit tests
   continue to use implicitly (by simply not passing `progress`), so none of them need to change.

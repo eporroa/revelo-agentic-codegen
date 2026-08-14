@@ -5,12 +5,15 @@ import type { ReadFileTool } from "../tools/readFile.js";
 import type { WriteFileTool } from "../tools/writeFile.js";
 import type { CallLLMTool } from "../tools/callLLM.js";
 import type { RunShellTool } from "../tools/runShell.js";
+import type { ProgressReporter } from "@/ui/progress.js";
 
 export interface ValidatorDeps {
   runShell: RunShellTool;
   readFile: ReadFileTool;
   writeFile: WriteFileTool;
   callLLM: CallLLMTool;
+  /** Optional — defaults to no live progress reporting when omitted. */
+  progress?: ProgressReporter;
 }
 
 export interface ValidationOutcome {

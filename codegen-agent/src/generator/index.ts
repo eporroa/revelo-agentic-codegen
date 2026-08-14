@@ -3,11 +3,14 @@ import { buildGeneratePrompt } from "../prompts/generate.js";
 import type { ReadFileTool } from "../tools/readFile.js";
 import type { WriteFileTool } from "../tools/writeFile.js";
 import type { CallLLMTool } from "../tools/callLLM.js";
+import type { ProgressReporter } from "@/ui/progress.js";
 
 export interface GeneratorDeps {
   readFile: ReadFileTool;
   writeFile: WriteFileTool;
   callLLM: CallLLMTool;
+  /** Optional — defaults to no live progress reporting when omitted. */
+  progress?: ProgressReporter;
 }
 
 /** Strips accidental markdown code fences an LLM sometimes wraps a file in. */

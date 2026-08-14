@@ -38,15 +38,17 @@ implementation and testing of each story.
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 [P] Define the `Phase` type and `ProgressReporter` interface in `src/ui/progress.ts`
+- [X] T003 [P] Define the `Phase` type and `ProgressReporter` interface in `src/ui/progress.ts`
       (contracts/progress-reporter.md)
-- [ ] T004 [P] Implement `noopProgressReporter` (every method a no-op) in
+- [X] T004 [P] Implement `noopProgressReporter` (every method a no-op) in
       `src/ui/noopProgress.ts` (depends on: T003)
-- [ ] T005 Add an **optional** `progress?: ProgressReporter` field (defaulting to
-      `noopProgressReporter` when omitted) to `PlannerDeps` in `src/planner/index.ts`,
-      `GeneratorDeps` in `src/generator/index.ts`, and `ValidatorDeps` in
-      `src/validator/index.ts` — the field exists but nothing calls it yet, so existing unit
-      tests for these three modules require no changes (depends on: T003, T004)
+- [X] T005 Add an **optional** `progress?: ProgressReporter` field to `GeneratorDeps` in
+      `src/generator/index.ts` and `ValidatorDeps` in `src/validator/index.ts` — the field
+      exists but nothing calls it yet, so existing unit tests for these modules require no
+      changes (depends on: T003, T004). Deviation from plan.md: `PlannerDeps` deliberately does
+      NOT get this field — planner's retry loop has no event shape that fits
+      taskStart/taskEnd/repairAttempt; adding an unused field would be dead code. Corrected in
+      contracts/progress-reporter.md too.
 
 **Checkpoint**: Foundation ready — user story implementation can now begin.
 
