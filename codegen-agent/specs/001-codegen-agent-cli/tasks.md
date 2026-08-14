@@ -141,11 +141,12 @@ working app in `--out`.
       `prompts/generate.ts`, calls `tools/callLLM`, writes via `tools/writeFile`, updates task
       status (depends on: T012, T013, T015, T024). Leaves status `in_progress` after writing —
       validator (T028) sets the final completed/failed verdict.
-- [ ] T028 [US1] Implement `src/validator/index.ts`: runs typecheck + test via
+- [X] T028 [US1] Implement `src/validator/index.ts`: runs typecheck + test via
       `tools/runShell`, parses failing files out of the output, and runs a bounded repair loop
       (max 3 attempts per file) that re-invokes `src/generator/index.ts` with
       `prompts/repair.ts` plus the exact error output, marking a task `failed` once exhausted
-      (depends on: T014, T025, T027)
+      (depends on: T014, T025, T027). Also sets every task's final completed/failed status
+      (FR-017).
 - [ ] T029 [US1] Wire `src/cli.ts` orchestration: plan → generate → validate in sequence. If
       `planner/` throws `PlanningFailedError`, abort immediately and report the failure —
       `generator/` is never invoked (FR-005). Otherwise, process exits `0` only when
