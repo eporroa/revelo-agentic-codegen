@@ -135,11 +135,12 @@ working app in `--out`.
       dependsOn references and topologically orders tasks, re-prompting on a cyclic/dangling
       graph. plan.md is rendered as a static pre-generation snapshot (resolves analyze A1 in
       favor of the US2 reading — final task status lives in report.md, not plan.md).
-- [ ] T027 [US1] Implement `src/generator/index.ts`: walks `Task[]` in dependency order; per
+- [X] T027 [US1] Implement `src/generator/index.ts`: walks `Task[]` in dependency order; per
       task, assembles scoped context (dependency file contents via `tools/readFile` + the
       target file's expected interface only — never the full spec or full codebase) using
       `prompts/generate.ts`, calls `tools/callLLM`, writes via `tools/writeFile`, updates task
-      status (depends on: T012, T013, T015, T024)
+      status (depends on: T012, T013, T015, T024). Leaves status `in_progress` after writing —
+      validator (T028) sets the final completed/failed verdict.
 - [ ] T028 [US1] Implement `src/validator/index.ts`: runs typecheck + test via
       `tools/runShell`, parses failing files out of the output, and runs a bounded repair loop
       (max 3 attempts per file) that re-invokes `src/generator/index.ts` with
