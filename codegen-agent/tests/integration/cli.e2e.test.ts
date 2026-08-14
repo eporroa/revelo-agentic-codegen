@@ -124,4 +124,36 @@ describe("cli end-to-end (llm/ mocked)", () => {
 
     expect(scoped.length / steps.length).toBeGreaterThanOrEqual(0.95);
   });
+
+  it("writes plan.md before any generation writeFile or validation runShell step (US2)", async () => {
+    const { run } = await import("../../src/cli.js");
+    const outDir = await makeOutDir();
+
+    await run([
+      "node",
+      "cli.js",
+      "--spec",
+      join(FIXTURES_DIR, "stub-spec.txt"),
+      "--boilerplate",
+      join(FIXTURES_DIR, "stub-boilerplate"),
+      "--out",
+      outDir,
+    ]);
+
+    const logRaw = await readFile(join(outDir, ".codegen-agent", "log.jsonl"), "utf8");
+    const steps = logRaw.trim().split("\n").map((line) => JSON.parse(line));
+
+    const planWriteIndex = steps.findIndex(
+      (s) => s.tool === "writeFile" && s.input?.path === ".codegen-agent/plan.md"
+    );
+    expect(planWriteIndex).toBeGreaterThanOrEqual(0);
+
+    const stepsBeforePlan = steps.slice(0, planWriteIndex);
+    expect(stepsBeforePlan.some((s) => s.tool === "runShell")).toBe(false);
+    expect(
+      stepsBeforePlan.some(
+        (s) => s.tool === "writeFile" && s.input?.path !== ".codegen-agent/plan.md"
+      )
+    ).toBe(false);
+  });
 });

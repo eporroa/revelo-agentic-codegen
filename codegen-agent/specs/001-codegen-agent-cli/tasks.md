@@ -169,7 +169,7 @@ unchanged by what happens afterward.
 **Independent Test**: Open `<out>/.codegen-agent/plan.md` while generation is still running
 (quickstart.md Scenario 2).
 
-- [ ] T031 [P] [US2] Integration test: assert `plan.md` is fully written to disk before the
+- [X] T031 [P] [US2] Integration test: assert `plan.md` is fully written to disk before the
       first `writeFile`/`runShell` Generation Step is logged, in
       `tests/integration/cli.e2e.test.ts`
 - [ ] T032 [US2] Refine `src/planner/index.ts`'s `plan.md` rendering so each task's execution
