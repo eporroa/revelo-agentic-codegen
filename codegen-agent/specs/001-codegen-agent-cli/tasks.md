@@ -80,7 +80,7 @@ package root (this repo's root — not nested under `specs/`).
       (`--spec`/`--boilerplate`/`--out`/`--force`) plus preconditions (spec readable,
       boilerplate has `typecheck`/`test` scripts, `--out` empty or `--force`) per
       contracts/cli.md (depends on: T006)
-- [ ] T018 Implement the boilerplate → `--out` recursive copy (`fs.cp`) in `src/cli.ts`,
+- [X] T018 Implement the boilerplate → `--out` recursive copy (`fs.cp`) in `src/cli.ts`,
       run immediately after preconditions pass (depends on: T017)
 
 **Checkpoint**: Foundation ready — user story implementation can now begin.

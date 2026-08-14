@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import "dotenv/config";
 import { Command } from "commander";
-import { access, constants, readdir, readFile } from "node:fs/promises";
+import { access, constants, cp, readdir, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 export interface CliOptions {
@@ -100,10 +100,23 @@ export function parseArgs(argv: string[]): CliOptions {
   };
 }
 
+/**
+ * Clones --boilerplate into --out (FR-002: never scaffold from scratch).
+ * Preconditions have already confirmed --out is empty/absent or --force
+ * was passed, so this may overwrite in the --force case.
+ */
+async function copyBoilerplate(options: CliOptions): Promise<void> {
+  await cp(options.boilerplate, options.out, {
+    recursive: true,
+    filter: (src) => !src.split(/[/\\]/).includes("node_modules"),
+  });
+}
+
 export async function run(argv: string[]): Promise<number> {
   const options = parseArgs(argv);
   await validatePreconditions(options);
-  // T018+ continues here: boilerplate copy, then plan -> generate -> validate -> report.
+  await copyBoilerplate(options);
+  // T026+ continues here: plan -> generate -> validate -> report.
   return 0;
 }
 
