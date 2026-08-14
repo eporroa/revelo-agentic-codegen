@@ -159,7 +159,7 @@ and editable when supplied via flag, prompted when missing.
       in the e2e suite (not caught by a plain static-import grep, but the same pattern) —
       verified `vi.mock` still correctly intercepts cli.ts's internal `./llm/index.js` import
       when mocked via the aliased path (all 22 tests still pass).
-- [ ] T019 [US3] Correct `CLAUDE.md`'s Tech Constraints line from "swapping to OpenAI/Gemini"
+- [X] T019 [US3] Correct `CLAUDE.md`'s Tech Constraints line from "swapping to OpenAI/Gemini"
       to "swapping to Gemini" (FR-013), matching the constitution's 1.1.0 amendment
 - [ ] T020 [US3] Run quickstart.md Scenarios 5 and 6 (the `grep` checks) and confirm zero
       unwanted matches (depends on: T017, T018, T019)

@@ -44,7 +44,8 @@ it as something to call out explicitly, not something to do silently.
 
 - Node.js + TypeScript.
 - LLM provider is pluggable behind a common interface — Anthropic Claude is primary, but
-  swapping to OpenAI/Gemini must not require rewriting the agent loop.
+  swapping to Gemini must not require rewriting the agent loop. No OpenAI support (constitution
+  1.1.0).
 - No database, backend, auth, or CI. Output is a static generated React + TS app only.
 
 ## Spec-Driven Development (spec-kit)
