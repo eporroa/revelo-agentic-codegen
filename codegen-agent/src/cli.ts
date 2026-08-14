@@ -137,6 +137,19 @@ export async function run(argv: string[]): Promise<number> {
   const runShellTool = createRunShell(options.out, log);
   const callLLMTool = createCallLLM(log, getProvider());
 
+  // copyBoilerplate() deliberately excludes node_modules (fast copy, no
+  // stale-cache surprises) — so --out needs its own install before
+  // typecheck/test can mean anything. Without this, Node's ancestor
+  // node_modules resolution can make tsc/vitest appear to "work" while
+  // actually running against the wrong dependency tree.
+  const installResult = await runShellTool("setup", "install");
+  if (installResult.output.exitCode !== 0) {
+    console.error(
+      `codegen-agent: "npm install" failed in --out (exit ${installResult.output.exitCode}); aborting before PLAN.\n${installResult.output.stderr}`
+    );
+    return 1;
+  }
+
   // PLAN — never enter GENERATE on a failed/empty plan (FR-005).
   let plan;
   try {

@@ -125,7 +125,7 @@ describe("cli end-to-end (llm/ mocked)", () => {
     expect(scoped.length / steps.length).toBeGreaterThanOrEqual(0.95);
   });
 
-  it("writes plan.md before any generation writeFile or validation runShell step (US2)", async () => {
+  it("writes plan.md before any generation writeFile or validation typecheck/test step (US2)", async () => {
     const { run } = await import("../../src/cli.js");
     const outDir = await makeOutDir();
 
@@ -149,7 +149,15 @@ describe("cli end-to-end (llm/ mocked)", () => {
     expect(planWriteIndex).toBeGreaterThanOrEqual(0);
 
     const stepsBeforePlan = steps.slice(0, planWriteIndex);
-    expect(stepsBeforePlan.some((s) => s.tool === "runShell")).toBe(false);
+    // "install" is legitimate infrastructure setup that has to happen before
+    // PLAN (--out needs its own node_modules for typecheck/test to mean
+    // anything); only typecheck/test — the actual VALIDATE phase — must
+    // never precede the plan being written.
+    expect(
+      stepsBeforePlan.some(
+        (s) => s.tool === "runShell" && s.input?.command !== "install"
+      )
+    ).toBe(false);
     expect(
       stepsBeforePlan.some(
         (s) => s.tool === "writeFile" && s.input?.path !== ".codegen-agent/plan.md"
