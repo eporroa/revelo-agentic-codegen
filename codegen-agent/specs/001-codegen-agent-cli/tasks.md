@@ -213,7 +213,7 @@ residual failure) both read back correctly from `report.md`.
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T037 [P] Write `codegen-agent/README.md`: setup, architecture overview, design
+- [X] T037 [P] Write `codegen-agent/README.md`: setup, architecture overview, design
       decisions/tradeoffs, cost-per-run estimate, what you'd improve (plan.md deliverable
       layout)
 - [ ] T038 Run quickstart.md Scenario 1 against the real `../code-boilerplate` and commit the
