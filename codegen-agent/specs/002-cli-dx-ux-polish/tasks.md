@@ -161,8 +161,9 @@ and editable when supplied via flag, prompted when missing.
       when mocked via the aliased path (all 22 tests still pass).
 - [X] T019 [US3] Correct `CLAUDE.md`'s Tech Constraints line from "swapping to OpenAI/Gemini"
       to "swapping to Gemini" (FR-013), matching the constitution's 1.1.0 amendment
-- [ ] T020 [US3] Run quickstart.md Scenarios 5 and 6 (the `grep` checks) and confirm zero
-      unwanted matches (depends on: T017, T018, T019)
+- [X] T020 [US3] Run quickstart.md Scenarios 5 and 6 (the `grep` checks) and confirm zero
+      unwanted matches (depends on: T017, T018, T019). Scenario 5: zero matches. Scenario 6:
+      two matches (CLAUDE.md, README.md), both correctly stating OpenAI is NOT supported.
 
 **Checkpoint**: All three user stories independently functional and testable.
 
