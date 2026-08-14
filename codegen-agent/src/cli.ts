@@ -3,6 +3,16 @@ import "dotenv/config";
 import { Command } from "commander";
 import { access, constants, cp, readdir, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
+import { RunLog } from "./tools/runLog.js";
+import { createWriteFile } from "./tools/writeFile.js";
+import { createReadFile } from "./tools/readFile.js";
+import { createRunShell } from "./tools/runShell.js";
+import { createCallLLM } from "./tools/callLLM.js";
+import { getProvider } from "./llm/index.js";
+import { createPlan } from "./planner/index.js";
+import { PlanningFailedError } from "./planner/types.js";
+import { generateAll } from "./generator/index.js";
+import { validateAndRepair } from "./validator/index.js";
 
 export interface CliOptions {
   spec: string;
@@ -116,8 +126,52 @@ export async function run(argv: string[]): Promise<number> {
   const options = parseArgs(argv);
   await validatePreconditions(options);
   await copyBoilerplate(options);
-  // T026+ continues here: plan -> generate -> validate -> report.
-  return 0;
+
+  const specText = await readFile(options.spec, "utf8");
+
+  const log = new RunLog(options.out);
+  const writeFileTool = createWriteFile(options.out, log);
+  const readFileTool = createReadFile(options.out, log);
+  const runShellTool = createRunShell(options.out, log);
+  const callLLMTool = createCallLLM(log, getProvider());
+
+  // PLAN — never enter GENERATE on a failed/empty plan (FR-005).
+  let plan;
+  try {
+    plan = await createPlan({
+      callLLM: callLLMTool,
+      writeFile: writeFileTool,
+      specText,
+      specPath: options.spec,
+    });
+  } catch (err) {
+    if (err instanceof PlanningFailedError) {
+      console.error(`codegen-agent: ${err.message}`);
+      return 1;
+    }
+    throw err;
+  }
+
+  // GENERATE
+  await generateAll(
+    { readFile: readFileTool, writeFile: writeFileTool, callLLM: callLLMTool },
+    plan
+  );
+
+  // VALIDATE (+ bounded repair)
+  const validation = await validateAndRepair(
+    {
+      runShell: runShellTool,
+      readFile: readFileTool,
+      writeFile: writeFileTool,
+      callLLM: callLLMTool,
+    },
+    plan
+  );
+
+  // T034/T035 continues here: build & persist report.md from `plan` + `validation`.
+  const hasResidualFailures = !validation.typecheck.passed || !validation.test.passed;
+  return hasResidualFailures ? 1 : 0; // FR-015
 }
 
 const isMain =

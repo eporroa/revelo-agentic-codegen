@@ -147,7 +147,7 @@ working app in `--out`.
       `prompts/repair.ts` plus the exact error output, marking a task `failed` once exhausted
       (depends on: T014, T025, T027). Also sets every task's final completed/failed status
       (FR-017).
-- [ ] T029 [US1] Wire `src/cli.ts` orchestration: plan → generate → validate in sequence. If
+- [X] T029 [US1] Wire `src/cli.ts` orchestration: plan → generate → validate in sequence. If
       `planner/` throws `PlanningFailedError`, abort immediately and report the failure —
       `generator/` is never invoked (FR-005). Otherwise, process exits `0` only when
       validation finishes with zero unresolved failures (FR-015) (depends on: T018, T026,
