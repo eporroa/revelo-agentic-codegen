@@ -108,12 +108,14 @@ working app in `--out`.
 - [X] T021 [P] [US1] Unit test: validator's repair loop stops at max 3 attempts per file and
       reports the residual failure instead of looping forever, in
       `tests/unit/validator.test.ts`
-- [ ] T022 [US1] Integration test: full CLI run against `tests/fixtures/` with `llm/` mocked,
+- [X] T022 [US1] Integration test: full CLI run against `tests/fixtures/` with `llm/` mocked,
       asserting `plan.md`/`log.jsonl`/`report.md` are all written and the exit code is correct;
       additionally, reading back `log.jsonl`, assert at least 95% of logged `callLLM` steps
       carry a `context` payload that excludes the full spec text and the full set of
       previously-generated files simultaneously (SC-003), in
-      `tests/integration/cli.e2e.test.ts` (depends on: T019)
+      `tests/integration/cli.e2e.test.ts` (depends on: T019). Asserts `plan.md`/`log.jsonl`
+      only at this point in the build — `report.md` doesn't exist until reporter/index.ts
+      (T034, User Story 3); that assertion is covered by T036 instead.
 
 ### Implementation for User Story 1
 
