@@ -15,6 +15,7 @@ import { generateAll } from "./generator/index.js";
 import { validateAndRepair } from "./validator/index.js";
 import { buildReport, writeReport } from "./reporter/index.js";
 import { aggregateUsage, recordedCallsFromLog } from "./cost/index.js";
+import { collectInputs, type FlagInputs } from "@/ui/collectInputs.js";
 
 export interface CliOptions {
   spec: string;
@@ -85,31 +86,29 @@ export async function validatePreconditions(options: CliOptions): Promise<void> 
   }
 }
 
-export function parseArgs(argv: string[]): CliOptions {
+interface RawFlags extends FlagInputs {
+  force: boolean;
+}
+
+/**
+ * --spec/--boilerplate/--out are now optional at the commander level —
+ * collectInputs() (User Story 1) prompts for whichever are missing, so
+ * commander must not reject the invocation before that ever runs.
+ */
+export function parseArgs(argv: string[]): RawFlags {
   const program = new Command();
   program
     .name("codegen-agent")
     .description(
       "Generates a React + TypeScript app from a natural-language spec into an existing boilerplate."
     )
-    .requiredOption("--spec <path>", "path to the natural-language spec file")
-    .requiredOption("--boilerplate <path>", "path to the pre-built boilerplate project")
-    .requiredOption("--out <path>", "destination for the generated app")
+    .option("--spec <path>", "path to the natural-language spec file")
+    .option("--boilerplate <path>", "path to the pre-built boilerplate project")
+    .option("--out <path>", "destination for the generated app")
     .option("--force", "allow writing into a non-empty --out", false);
 
   program.parse(argv);
-  const opts = program.opts<{
-    spec: string;
-    boilerplate: string;
-    out: string;
-    force: boolean;
-  }>();
-  return {
-    spec: resolve(opts.spec),
-    boilerplate: resolve(opts.boilerplate),
-    out: resolve(opts.out),
-    force: opts.force,
-  };
+  return program.opts<RawFlags>();
 }
 
 /**
@@ -125,7 +124,25 @@ async function copyBoilerplate(options: CliOptions): Promise<void> {
 }
 
 export async function run(argv: string[]): Promise<number> {
-  const options = parseArgs(argv);
+  const flags = parseArgs(argv);
+  const isTTY = process.stdin.isTTY === true;
+
+  // User Story 1: prompt for whatever's missing, confirm (editable) whatever
+  // was supplied via flag. Never runs at all for a fully-flagged, non-TTY
+  // invocation (FR-006) — the existing mocked-llm/ test suite exercises
+  // exactly that path.
+  const collected = await collectInputs(flags, isTTY);
+  if (collected === "cancelled") {
+    return 1; // FR-005: nothing written, no LLM call made
+  }
+
+  const options: CliOptions = {
+    spec: resolve(collected.spec),
+    boilerplate: resolve(collected.boilerplate),
+    out: resolve(collected.out),
+    force: flags.force,
+  };
+
   await validatePreconditions(options);
   await copyBoilerplate(options);
 

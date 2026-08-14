@@ -84,9 +84,13 @@ and editable when supplied via flag, prompted when missing.
       Clarification; blank when missing), followed by one `confirm()`; returns `"cancelled"` on
       cancel or decline; when non-interactive with missing fields, fails fast with a clear error
       instead of prompting, in `src/ui/collectInputs.ts` (depends on: T008)
-- [ ] T010 [US1] Wire `collectInputs()` into `src/cli.ts`'s `run()`, called before
+- [X] T010 [US1] Wire `collectInputs()` into `src/cli.ts`'s `run()`, called before
       `validatePreconditions`/`copyBoilerplate`; on `"cancelled"`, exit `1` with nothing written
-      to `--out` and no LLM call made (FR-005) (depends on: T009)
+      to `--out` and no LLM call made (FR-005) (depends on: T009). Also changed commander's
+      `--spec`/`--boilerplate`/`--out` from `.requiredOption` to `.option` — they can no longer
+      be required at the arg-parsing level now that `collectInputs()` is what enforces them.
+      Manually verified both the missing-flags/non-TTY fail-fast path and the
+      all-flags/non-TTY skip-straight-through path against the real build.
 
 **Checkpoint**: User Story 1 is fully functional and independently testable.
 
