@@ -40,3 +40,6 @@
   enough that every open question had a reasonable, low-risk default, documented in the
   Assumptions section of spec.md instead of blocking on clarification.
 - All items pass as of the initial draft; no iteration was required.
+- 2026-08-14 `/speckit-clarify` session: 5 clarifications integrated (LLM providers/config,
+  transport-level retry policy, task status lifecycle, plan file format, run log location).
+  Re-validated against the updated spec — all items still pass, no regressions.

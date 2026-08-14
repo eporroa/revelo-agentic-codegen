@@ -8,6 +8,16 @@
 
 **Input**: User description: "Build a CLI tool called `codegen-agent` that takes a natural-language product specification (a text file) and autonomously generates a working React + TypeScript application into a pre-existing Vite boilerplate, without scaffolding a new project. Inputs: --spec <path>, --boilerplate <path>, --out <path>. Behavior, in order: 1. PLAN — read the spec and produce a structured, ordered, dependency-aware task list, persisted to disk. 2. GENERATE — execute tasks in dependency order, each task a discrete, scoped LLM call followed by an explicit file write; never one mega-prompt. 3. VALIDATE — run typecheck and test as shell tool calls, feed failures back into a bounded repair loop (max 3 attempts per failing file). 4. REPORT — a run summary: tasks completed, files written, validation results, retry count, approximate token usage and cost, and any unresolved failures."
 
+## Clarifications
+
+### Session 2026-08-14
+
+- Q: Which LLM providers must the CLI support, and how are they selected/configured? → A: Claude and Gemini, both configurable via `.env` file settings (no OpenAI in v1).
+- Q: When a raw LLM API call itself fails (timeout, rate limit, 5xx) — separate from generated code failing typecheck/tests — should the CLI retry automatically before giving up on the task? → A: Yes — automatic retry with backoff, up to 3 attempts, before marking the task failed.
+- Q: What discrete states should a task move through, from planned to done? → A: `pending → in_progress → completed | failed` (a simple 4-state model; validation repair attempts happen within a task without a separate visible task state).
+- Q: What format should the persisted plan file use? → A: Markdown or plain text — human-readable, no JSON requirement.
+- Q: Where should the discrete log of each tool call (LLM calls, file writes, shell commands) be written during a run? → A: A single structured log file per run, alongside the plan and report.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Generate a working app from a spec (Priority: P1)
@@ -99,8 +109,9 @@ report accurately reflects the outcome without inspecting raw logs.
 - How does the system handle a spec that describes fields or features not present in the
   boilerplate's existing mock schema (e.g., a renamed field, an added filter) — the agent must
   adapt rather than fail outright?
-- How does the system handle an individual LLM call failing or timing out mid-generation for
-  one task, without corrupting or silently abandoning the rest of the run?
+- An individual LLM call fails or times out mid-generation for one task: the CLI automatically
+  retries that call, with backoff, up to 3 attempts, before marking the task failed and moving
+  on — without corrupting or silently abandoning the rest of the run.
 - How does the system handle a file that still fails validation after all 3 repair attempts —
   it must be reported, not swallowed?
 - How does the system handle a spec that omits optional features — the CLI should build only
@@ -118,15 +129,17 @@ report accurately reflects the outcome without inspecting raw logs.
 - **FR-003**: The CLI MUST refuse to write into a non-empty destination path unless the
   developer explicitly confirms an overwrite, to prevent silent data loss.
 - **FR-004**: Before any code is generated, the CLI MUST produce an ordered, dependency-aware
-  task list derived from the spec and persist it to disk in a durable, human-inspectable
-  format.
+  task list derived from the spec and persist it to disk as a human-readable Markdown or plain
+  text file, so it can be opened and read without any tooling.
 - **FR-005**: The CLI MUST NOT begin code generation if task-list creation fails or produces no
   tasks.
 - **FR-006**: Each generation step MUST correspond to one discrete unit of work (one file, or a
   tightly related set of files) and MUST be executed and logged as its own action — never
   combined with other steps into a single call.
 - **FR-007**: Each generation step MUST be logged with both its inputs (the scoped context
-  given to it) and its outputs (the file(s) written), independently inspectable after the run.
+  given to it) and its outputs (the file(s) written) to a single structured, append-only log
+  file per run — alongside the plan and report — so the full action trail is independently
+  inspectable after the run ends, not just visible while it's running.
 - **FR-008**: Context supplied to any single generation step MUST be limited to what that step
   needs — the relevant spec excerpt, the target file's expected interface/exports, and the
   contents of files it depends on — never the full spec plus the full generated codebase at
@@ -143,19 +156,32 @@ report accurately reflects the outcome without inspecting raw logs.
   estimated cost, and any unresolved failures.
 - **FR-013**: The CLI MUST work against specs that differ from any reference/sample spec (e.g.,
   renamed fields, added filters) without requiring changes to the CLI itself.
-- **FR-014**: The CLI's LLM calls MUST go through a provider-agnostic interface so the
-  underlying provider can be swapped without changing the CLI's plan/generate/validate flow.
+- **FR-014**: The CLI's LLM calls MUST go through a provider-agnostic interface, with Claude
+  and Gemini both supported as of v1; the active provider MUST be selected via `.env`
+  configuration, not hardcoded, and switching providers MUST NOT require changing the CLI's
+  plan/generate/validate flow.
 - **FR-015**: The CLI MUST exit with a non-zero status when a run finishes with unresolved
   validation failures, and with a zero status when a run finishes fully successful.
+- **FR-016**: A raw LLM API call failure (timeout, rate limit, server error) MUST be retried
+  automatically with backoff, up to a maximum of 3 attempts, before the task is marked failed —
+  this transport-level retry is distinct from, and does not consume, the post-validation repair
+  attempts described in FR-010.
+- **FR-017**: Each task MUST expose its status as one of `pending`, `in_progress`, `completed`,
+  or `failed` in the persisted plan/report, so the state of a run can be read without replaying
+  its logs.
 
 ### Key Entities *(include if feature involves data)*
 
 - **Spec**: the natural-language input file describing the desired application.
-- **Task**: one planned unit of work, with an identifier, description, dependencies, and
-  status.
-- **Plan**: the ordered collection of Tasks persisted to disk before generation begins.
+- **Task**: one planned unit of work, with an identifier, description, dependencies, and a
+  status of `pending`, `in_progress`, `completed`, or `failed`.
+- **Plan**: the ordered collection of Tasks, persisted to disk as a human-readable Markdown or
+  plain text file before generation begins.
 - **Generation Step**: a logged, executed action that produced or modified one or more files,
   including its scoped input context and its output.
+- **Run Log**: the single structured, append-only file, one per run, that records every
+  discrete tool call (LLM calls, file writes, shell commands) with its inputs and outputs,
+  persisted alongside the Plan and Run Report.
 - **Validation Result**: the outcome of a typecheck/test run, including any failures and which
   file(s) they belong to.
 - **Run Report**: the final summary artifact produced at the end of a CLI invocation.
@@ -188,7 +214,8 @@ report accurately reflects the outcome without inspecting raw logs.
 - The natural-language spec is unstructured free text; no fixed schema or front-matter is
   required of it.
 - LLM provider selection follows the pluggable-provider approach already established in this
-  project's constitution (Claude primary, OpenAI/Gemini swappable via a common interface).
+  project's constitution: Claude and Gemini are both supported behind a common interface,
+  chosen via `.env` configuration (see Clarifications). OpenAI support is not required for v1.
 - Token and cost figures are approximate, based on published per-token pricing for the
   configured model, not billed-invoice-accurate.
 - This feature covers the CLI's plan/generate/validate/report pipeline only — no database,
