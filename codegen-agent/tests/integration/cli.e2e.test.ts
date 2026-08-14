@@ -2,8 +2,8 @@ import { describe, it, expect, vi, afterEach } from "vitest";
 import { mkdtemp, rm, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { LLMProvider, LLMResponse } from "../../src/llm/types.js";
-import type { ProgressReporter, Phase } from "../../src/ui/progress.js";
+import type { LLMProvider, LLMResponse } from "@/llm/types.js";
+import type { ProgressReporter, Phase } from "@/ui/progress.js";
 
 // llm/ is mocked end-to-end: no real tokens are spent running this suite
 // (plan.md's Testing Approach). The fake provider recognizes which stage
@@ -32,7 +32,7 @@ function makeFakeProvider(): LLMProvider {
   };
 }
 
-vi.mock("../../src/llm/index.js", () => ({
+vi.mock("@/llm/index.js", () => ({
   getProvider: () => makeFakeProvider(),
 }));
 
@@ -51,7 +51,7 @@ const FIXTURES_DIR = new URL("../fixtures/", import.meta.url).pathname;
 
 describe("cli end-to-end (llm/ mocked)", () => {
   it("writes plan.md and log.jsonl, and exits 0 on a clean run", async () => {
-    const { run } = await import("../../src/cli.js");
+    const { run } = await import("@/cli.js");
     const outDir = await makeOutDir();
 
     const exitCode = await run([
@@ -90,7 +90,7 @@ describe("cli end-to-end (llm/ mocked)", () => {
   });
 
   it("keeps generation-step context scoped: at least 95% of callLLM log entries omit the full spec + full codebase at once (SC-003)", async () => {
-    const { run } = await import("../../src/cli.js");
+    const { run } = await import("@/cli.js");
     const outDir = await makeOutDir();
     const specText = await readFile(join(FIXTURES_DIR, "stub-spec.txt"), "utf8");
 
@@ -127,7 +127,7 @@ describe("cli end-to-end (llm/ mocked)", () => {
   });
 
   it("writes plan.md before any generation writeFile or validation typecheck/test step (US2)", async () => {
-    const { run } = await import("../../src/cli.js");
+    const { run } = await import("@/cli.js");
     const outDir = await makeOutDir();
 
     await run([
@@ -167,7 +167,7 @@ describe("cli end-to-end (llm/ mocked)", () => {
   });
 
   it("exits 1 and names the residual failure + repair count when validation can't be fixed (US3)", async () => {
-    const { run } = await import("../../src/cli.js");
+    const { run } = await import("@/cli.js");
     const outDir = await makeOutDir();
 
     const exitCode = await run([
@@ -191,7 +191,7 @@ describe("cli end-to-end (llm/ mocked)", () => {
   });
 
   it("reports phaseStart/phaseEnd for plan, generate, validate, report, in that order (US2)", async () => {
-    const { run } = await import("../../src/cli.js");
+    const { run } = await import("@/cli.js");
     const outDir = await makeOutDir();
 
     const events: string[] = [];

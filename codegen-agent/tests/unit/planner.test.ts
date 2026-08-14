@@ -2,11 +2,11 @@ import { describe, it, expect, vi, afterEach } from "vitest";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createPlan } from "../../src/planner/index.js";
-import { PlanningFailedError } from "../../src/planner/types.js";
-import { RunLog } from "../../src/tools/runLog.js";
-import { createWriteFile } from "../../src/tools/writeFile.js";
-import type { CallLLMTool } from "../../src/tools/callLLM.js";
+import { createPlan } from "@/planner/index.js";
+import { PlanningFailedError } from "@/planner/types.js";
+import { RunLog } from "@/tools/runLog.js";
+import { createWriteFile } from "@/tools/writeFile.js";
+import type { CallLLMTool } from "@/tools/callLLM.js";
 
 const tempDirs: string[] = [];
 

@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { buildReport, renderReportMarkdown } from "../../src/reporter/index.js";
-import type { Plan, Task, ValidationResult } from "../../src/planner/types.js";
-import type { ValidationOutcome } from "../../src/validator/index.js";
+import { buildReport, renderReportMarkdown } from "@/reporter/index.js";
+import type { Plan, Task, ValidationResult } from "@/planner/types.js";
+import type { ValidationOutcome } from "@/validator/index.js";
 
 function task(overrides: Partial<Task>): Task {
   return {

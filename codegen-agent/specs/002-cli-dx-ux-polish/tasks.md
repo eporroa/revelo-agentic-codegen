@@ -152,9 +152,13 @@ and editable when supplied via flag, prompted when missing.
       `src/reporter/index.ts`, `src/validator/index.ts` (the full list from the repo-wide grep
       done during `/speckit-specify`). Zero `../` cross-directory imports remain in `src/`;
       typecheck, all 22 tests, and `npm run build` all still pass.
-- [ ] T018 [P] [US3] Migrate every relative import (`../../src/...`) in `tests/` to the
+- [X] T018 [P] [US3] Migrate every relative import (`../../src/...`) in `tests/` to the
       `@/...` alias — `tests/unit/planner.test.ts`, `tests/unit/reporter.test.ts`,
-      `tests/unit/validator.test.ts`, `tests/integration/cli.e2e.test.ts`
+      `tests/unit/validator.test.ts`, `tests/integration/cli.e2e.test.ts`. Also migrated the
+      dynamic `import("../../src/cli.js")` calls and `vi.mock("../../src/llm/index.js", ...)`
+      in the e2e suite (not caught by a plain static-import grep, but the same pattern) —
+      verified `vi.mock` still correctly intercepts cli.ts's internal `./llm/index.js` import
+      when mocked via the aliased path (all 22 tests still pass).
 - [ ] T019 [US3] Correct `CLAUDE.md`'s Tech Constraints line from "swapping to OpenAI/Gemini"
       to "swapping to Gemini" (FR-013), matching the constitution's 1.1.0 amendment
 - [ ] T020 [US3] Run quickstart.md Scenarios 5 and 6 (the `grep` checks) and confirm zero

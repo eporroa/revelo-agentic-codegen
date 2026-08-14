@@ -2,13 +2,13 @@ import { describe, it, expect, vi, afterEach } from "vitest";
 import { mkdtemp, rm, writeFile as fsWriteFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { validateAndRepair } from "../../src/validator/index.js";
-import { RunLog } from "../../src/tools/runLog.js";
-import { createWriteFile } from "../../src/tools/writeFile.js";
-import { createReadFile } from "../../src/tools/readFile.js";
-import { createRunShell } from "../../src/tools/runShell.js";
-import type { CallLLMTool } from "../../src/tools/callLLM.js";
-import type { Plan, Task } from "../../src/planner/types.js";
+import { validateAndRepair } from "@/validator/index.js";
+import { RunLog } from "@/tools/runLog.js";
+import { createWriteFile } from "@/tools/writeFile.js";
+import { createReadFile } from "@/tools/readFile.js";
+import { createRunShell } from "@/tools/runShell.js";
+import type { CallLLMTool } from "@/tools/callLLM.js";
+import type { Plan, Task } from "@/planner/types.js";
 
 const tempDirs: string[] = [];
 
