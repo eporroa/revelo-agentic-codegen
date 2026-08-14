@@ -28,11 +28,7 @@ function sleep(ms: number): Promise<void> {
  * separate from, and does not consume, validator/index.ts's post-validation
  * repair attempts (FR-010).
  */
-export function createCallLLM(
-  outDir: string,
-  log: RunLog,
-  provider: LLMProvider
-): CallLLMTool {
+export function createCallLLM(log: RunLog, provider: LLMProvider): CallLLMTool {
   return async (taskId, prompt, context) => {
     let lastError: unknown;
     for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {

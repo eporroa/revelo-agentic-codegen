@@ -16,7 +16,7 @@ const PRICING_PER_1K_TOKENS: Record<string, { input: number; output: number }> =
 const DEFAULT_PRICING = { input: 0.003, output: 0.015 };
 
 export function estimateCallCostUsd(
-  provider: string,
+  _provider: string,
   model: string,
   usage: LLMUsage
 ): number {

@@ -76,7 +76,7 @@ package root (this repo's root — not nested under `specs/`).
       T010, T011)
 - [X] T016 [P] Implement `src/cost/index.ts` — static per-model `$/1K tokens` pricing table +
       a usage-aggregation helper (research.md)
-- [ ] T017 Implement `src/cli.ts` skeleton: `commander` arg parsing
+- [X] T017 Implement `src/cli.ts` skeleton: `commander` arg parsing
       (`--spec`/`--boilerplate`/`--out`/`--force`) plus preconditions (spec readable,
       boilerplate has `typecheck`/`test` scripts, `--out` empty or `--force`) per
       contracts/cli.md (depends on: T006)
