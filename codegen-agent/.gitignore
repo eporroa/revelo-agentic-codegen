@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Env files (keep .env.example tracked)
+.env
+.env.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Test / coverage
+coverage/
+
+# Scratch space for manual quickstart runs (tmp/, broken-boilerplate copies, etc.)
+tmp/
+
+# OS/editor cruft
+.DS_Store
+*.swp
+.vscode/
+.idea/
