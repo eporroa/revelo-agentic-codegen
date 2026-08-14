@@ -1,4 +1,4 @@
-Car Inventory Manager
+App: Car Inventory Manager
 
 Build a Car Inventory Manager app on top of the existing boilerplate. A mock GraphQL API is
 already configured (via MSW) with a Car type: id, make, model, year, color, and three image
@@ -26,5 +26,5 @@ Optional, attempt if time allows:
 - Add a year filter alongside the model search, so both can be applied at once.
 - Combine the search, sort, and year-filter logic into a single useCarFilters() hook.
 
-Out of scope: no backend, no database, no authentication, no deployment. The mock GraphQL API
-provided by the boilerplate is the only data source.
+Do not build a real backend or database — all data must come from the MSW-mocked
+GraphQL layer already present in the boilerplate.
