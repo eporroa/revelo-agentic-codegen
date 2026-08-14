@@ -108,8 +108,11 @@ working app in `--out`.
       reports the residual failure instead of looping forever, in
       `tests/unit/validator.test.ts`
 - [ ] T022 [US1] Integration test: full CLI run against `tests/fixtures/` with `llm/` mocked,
-      asserting `plan.md`/`log.jsonl`/`report.md` are all written and the exit code is correct,
-      in `tests/integration/cli.e2e.test.ts` (depends on: T019)
+      asserting `plan.md`/`log.jsonl`/`report.md` are all written and the exit code is correct;
+      additionally, reading back `log.jsonl`, assert at least 95% of logged `callLLM` steps
+      carry a `context` payload that excludes the full spec text and the full set of
+      previously-generated files simultaneously (SC-003), in
+      `tests/integration/cli.e2e.test.ts` (depends on: T019)
 
 ### Implementation for User Story 1
 
@@ -124,7 +127,9 @@ working app in `--out`.
       file")
 - [ ] T026 [US1] Implement `src/planner/index.ts`: spec text → `Task[]` via one scoped LLM call
       using `prompts/plan.ts` + `tools/callLLM`, zod-validates the response (re-prompting on a
-      schema mismatch), persists `<out>/.codegen-agent/plan.md` (depends on: T006, T015, T023)
+      schema mismatch). On success, persists `<out>/.codegen-agent/plan.md`. If retries are
+      exhausted or the validated result has zero tasks, throws a typed `PlanningFailedError`
+      instead of returning a `Plan` (FR-005) (depends on: T006, T015, T023)
 - [ ] T027 [US1] Implement `src/generator/index.ts`: walks `Task[]` in dependency order; per
       task, assembles scoped context (dependency file contents via `tools/readFile` + the
       target file's expected interface only — never the full spec or full codebase) using
@@ -135,9 +140,11 @@ working app in `--out`.
       (max 3 attempts per file) that re-invokes `src/generator/index.ts` with
       `prompts/repair.ts` plus the exact error output, marking a task `failed` once exhausted
       (depends on: T014, T025, T027)
-- [ ] T029 [US1] Wire `src/cli.ts` orchestration: plan → generate → validate in sequence;
-      process exits `0` only when validation finishes with zero unresolved failures (FR-015)
-      (depends on: T018, T026, T027, T028)
+- [ ] T029 [US1] Wire `src/cli.ts` orchestration: plan → generate → validate in sequence. If
+      `planner/` throws `PlanningFailedError`, abort immediately and report the failure —
+      `generator/` is never invoked (FR-005). Otherwise, process exits `0` only when
+      validation finishes with zero unresolved failures (FR-015) (depends on: T018, T026,
+      T027, T028)
 - [ ] T030 [US1] Author `codegen-agent/sample-spec.txt` — the reference Car Inventory Manager
       spec (the deliverable input, per plan.md)
 

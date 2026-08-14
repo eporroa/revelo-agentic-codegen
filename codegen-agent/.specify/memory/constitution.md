@@ -47,12 +47,13 @@ step by step.
 
 - **Language/runtime**: Node.js with TypeScript, preferred over other languages.
 - **LLM provider**: pluggable behind a common interface. Anthropic Claude is the primary
-  provider; the interface MUST support swapping to OpenAI or Gemini without rewriting the
-  agent loop.
+  provider; the interface MUST support swapping to Gemini without rewriting the agent loop.
+  Both are configured via `.env`. OpenAI support is not required for v1 (see the
+  001-codegen-agent-cli spec's Clarifications session).
 - **Output scope**: no database, backend, auth, or CI. The agent's output is a static
-  generated React + TypeScript app only, written into the existing boilerplate at
-  `../code-boilerplate` (React 19, Vite, Apollo Client, MUI, MSW, Vitest — see that project's
-  README for the reference application spec).
+  generated React + TypeScript app only, written into a boilerplate the developer supplies via
+  `--boilerplate` (this repo's copy lives at `../code-boilerplate`: React 19, Vite, Apollo
+  Client, MUI, MSW, Vitest — see that project's README for the reference application spec).
 
 ## Governance
 
@@ -62,4 +63,11 @@ an unbounded context, a single giant commit, etc.) MUST be justified in the rele
 PR description, not silently done. Amendments to this document require a version bump and a
 note on what changed and why.
 
-**Version**: 1.0.0 | **Ratified**: 2026-08-14 | **Last Amended**: 2026-08-14
+## Amendment History
+
+- **1.1.0** (2026-08-14): Tech Constraints narrowed from "OpenAI or Gemini" to "Gemini" as the
+  required swap target, matching the 001-codegen-agent-cli spec's Clarifications decision
+  (Claude + Gemini, no OpenAI in v1). Also de-hardcoded the boilerplate-path wording to match
+  FR-001's `--boilerplate` argument. Caught by `/speckit-analyze` (findings C1/C2).
+
+**Version**: 1.1.0 | **Ratified**: 2026-08-14 | **Last Amended**: 2026-08-14
