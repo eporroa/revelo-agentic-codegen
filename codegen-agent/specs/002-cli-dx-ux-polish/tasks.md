@@ -76,7 +76,7 @@ and editable when supplied via flag, prompted when missing.
 
 ### Implementation for User Story 1
 
-- [ ] T008 [US1] Implement `missingFields()` and `shouldPromptInteractively()` as pure
+- [X] T008 [US1] Implement `missingFields()` and `shouldPromptInteractively()` as pure
       functions in `src/ui/collectInputs.ts` (contracts/input-collection.md) (depends on: T006,
       T007)
 - [ ] T009 [US1] Implement `collectInputs()`: an `@clack/prompts` `text()` prompt per field
