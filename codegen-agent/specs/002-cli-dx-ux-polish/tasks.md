@@ -174,7 +174,10 @@ and editable when supplied via flag, prompted when missing.
 - [X] T021 Final validation pass: `npm run typecheck && npm test && npm run test:e2e` all
       green — confirms zero behavior regression (SC-006). 17 unit + 5 integration = 22/22
       passing; `npm run build` also clean.
-- [ ] T022 [P] Add a short README.md section describing the new interactive/progress UX
+- [X] T022 [P] Add a short README.md section describing the new interactive/progress UX. Also
+      corrected a pre-existing inaccuracy noticed while editing: the Cost per run section
+      claimed a committed `sample-output/` with measured figures that doesn't exist yet —
+      replaced with the real (if informally captured) numbers from an actual run instead.
 - [ ] T023 Run quickstart.md Scenarios 1–4 manually against the real boilerplate to visually
       confirm the prompt/spinner UX — no automated test substitutes for actually watching the
       terminal

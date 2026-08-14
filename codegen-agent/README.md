@@ -33,6 +33,27 @@ npm run dev
 `--force` allows writing into a non-empty `--out` directory (refused by default, to avoid
 silent data loss).
 
+## Interactive UX
+
+`--spec`/`--boilerplate`/`--out` are no longer strictly required flags. Run `codegen-agent`
+with any subset of them (including none):
+
+```bash
+node dist/cli.js
+```
+
+Whatever's missing gets prompted for; whatever was supplied via flag shows up pre-filled and
+editable — accept it with Enter or type over it if it's wrong — followed by one confirmation
+before PLAN starts. This never triggers in a non-interactive context (CI, a pipe, a script)
+when every required flag is already present — it just runs, exactly as before.
+
+Once running, the terminal shows which phase is active (PLAN/GENERATE/VALIDATE/REPORT), a live
+spinner for the task currently being generated, and a status line for each validation repair
+attempt — instead of sitting silent for however long the LLM calls take.
+
+See [`specs/002-cli-dx-ux-polish/`](specs/002-cli-dx-ux-polish/) for the full spec/plan/tasks
+this was built from.
+
 ## Architecture
 
 Four phases, run in strict order, each producing its own persisted, inspectable artifact under
@@ -92,12 +113,13 @@ plain sequential pipeline instead of an agent framework — is in
 
 Every run's `report.md` states its own measured token usage and estimated cost (pricing table
 in `src/cost/index.ts`, applied to each provider's own reported usage). As a rough order of
-magnitude for a spec the size of `sample-spec.txt` (~12-15 tasks): each task costs one
-generation call plus, in the common case, zero repair calls — call it roughly 1.5-2K input
-tokens and 500-1K output tokens per task including the planning call's larger one-time spec
-read. On Claude Sonnet pricing that lands well under $1 for the whole run; Gemini is cheaper
-still. See the committed `sample-output/.codegen-agent/report.md` for this project's actual
-measured figures from a real run, not an estimate.
+magnitude for a spec the size of `sample-spec.txt` (~11-15 tasks): a real run against
+`../code-boilerplate` (Gemini, `gemini-flash-latest`) completed 10/11 tasks, used roughly 122K
+input / 50K output tokens, and cost about $0.16 — well under $1, with the one residual failure
+being a genuinely hard task (writing UI-text-exact assertions) rather than a cost or
+infrastructure problem. `sample-output/` (the committed generated-app deliverable) isn't in
+this repo yet — the figures above are from a real run, not an estimate, but the artifact itself
+is still pending.
 
 ## What worked well / what I'd improve with more time
 
