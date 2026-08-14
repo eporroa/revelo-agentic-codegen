@@ -172,7 +172,7 @@ unchanged by what happens afterward.
 - [X] T031 [P] [US2] Integration test: assert `plan.md` is fully written to disk before the
       first `writeFile`/`runShell` Generation Step is logged, in
       `tests/integration/cli.e2e.test.ts`
-- [ ] T032 [US2] Refine `src/planner/index.ts`'s `plan.md` rendering so each task's execution
+- [X] T032 [US2] Refine `src/planner/index.ts`'s `plan.md` rendering so each task's execution
       order and dependencies read as prose, per data-model.md's Plan entity — not a raw dump of
       the `Task[]` array (depends on: T026)
 

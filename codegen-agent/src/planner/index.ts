@@ -107,22 +107,34 @@ function materializeTasks(planned: PlannedTask[]): Task[] {
  * outcomes belong in report.md instead (see reporter/index.ts).
  */
 export function renderPlanMarkdown(plan: Plan): string {
+  const byId = new Map(plan.tasks.map((t) => [t.id, t]));
   const lines: string[] = [
     "# codegen-agent Plan",
     "",
-    `Generated: ${plan.createdAt}`,
-    `Spec: ${plan.specPath}`,
+    `Generated ${plan.createdAt} from \`${plan.specPath}\`.`,
+    "",
+    `This run will execute ${plan.tasks.length} task${plan.tasks.length === 1 ? "" : "s"} in ` +
+      "the order below. This file is written before any code is generated and is not " +
+      "rewritten afterward — see report.md for what actually happened during the run.",
     "",
     "## Tasks (execution order)",
     "",
   ];
   plan.tasks.forEach((task, i) => {
-    lines.push(`${i + 1}. **${task.id}** — ${task.description}`);
-    lines.push(`   - Target files: ${task.targetFiles.join(", ")}`);
+    lines.push(`### ${i + 1}. ${task.id} — ${task.description}`);
+    lines.push("");
     lines.push(
       task.dependsOn.length > 0
-        ? `   - Depends on: ${task.dependsOn.join(", ")}`
-        : `   - Depends on: (nothing — can run first)`
+        ? `Runs after ${task.dependsOn
+            .map((id) => `${id} (${byId.get(id)?.description ?? "unknown"})`)
+            .join(", ")}.`
+        : "No dependencies — can run first."
+    );
+    lines.push("");
+    lines.push(
+      task.targetFiles.length > 1
+        ? `Writes: ${task.targetFiles.map((f) => `\`${f}\``).join(", ")}.`
+        : `Writes: \`${task.targetFiles[0]}\`.`
     );
     lines.push("");
   });
