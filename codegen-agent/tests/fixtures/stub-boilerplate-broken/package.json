@@ -4,6 +4,6 @@
   "version": "0.0.0",
   "scripts": {
     "typecheck": "node -e \"process.exit(0)\"",
-    "test": "node -e \"console.error('simulated failing test'); process.exit(1)\""
+    "test": "node -e \"console.error('FAIL src/components/WidgetCard.tsx: simulated failing test'); process.exit(1)\""
   }
 }

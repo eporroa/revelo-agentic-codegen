@@ -156,4 +156,28 @@ describe("cli end-to-end (llm/ mocked)", () => {
       )
     ).toBe(false);
   });
+
+  it("exits 1 and names the residual failure + repair count when validation can't be fixed (US3)", async () => {
+    const { run } = await import("../../src/cli.js");
+    const outDir = await makeOutDir();
+
+    const exitCode = await run([
+      "node",
+      "cli.js",
+      "--spec",
+      join(FIXTURES_DIR, "stub-spec.txt"),
+      "--boilerplate",
+      join(FIXTURES_DIR, "stub-boilerplate-broken"),
+      "--out",
+      outDir,
+    ]);
+
+    expect(exitCode).toBe(1);
+
+    const reportMd = await readFile(join(outDir, ".codegen-agent", "report.md"), "utf8");
+    expect(reportMd).toContain("FAILED");
+    expect(reportMd).toContain("T1");
+    expect(reportMd).toContain("Repair attempts used: 3");
+    expect(reportMd).toContain("Exit code: 1");
+  });
 });

@@ -200,10 +200,12 @@ residual failure) both read back correctly from `report.md`.
       Also writes a minimal report.md on a PlanningFailedError, so FR-012's "every run produces
       a report" holds even when GENERATE is never reached. Fills in T022's deferred report.md
       assertion.
-- [ ] T036 [P] [US3] Integration test: an engineered residual failure (a `stub-boilerplate`
+- [X] T036 [P] [US3] Integration test: an engineered residual failure (a `stub-boilerplate`
       fixture variant with its `test` script disabled) produces a `report.md` that names the
       failure and repair-attempt count, and the CLI exits `1`, in
-      `tests/integration/cli.e2e.test.ts`
+      `tests/integration/cli.e2e.test.ts`. `stub-boilerplate-broken`'s test script prints the
+      exact file path the e2e suite's fake plan always targets, so the validator can attribute
+      the failure to a task — this fixture is coupled to that mock, not a generic stand-in.
 
 **Checkpoint**: All three user stories independently functional and testable.
 
