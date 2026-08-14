@@ -1,5 +1,7 @@
+import { readFile } from "node:fs/promises";
 import type { LLMUsage } from "../llm/types.js";
 import type { TokenUsageEntry } from "../planner/types.js";
+import { logPath } from "../tools/runLog.js";
 
 /**
  * Static $/1K-token pricing, used only to produce an approximate estimate
@@ -64,4 +66,35 @@ export function aggregateUsage(calls: RecordedCall[]): {
   }
 
   return { tokenUsage: Array.from(byModel.values()), estimatedCostUsd };
+}
+
+interface LoggedCallLLMStep {
+  tool: string;
+  input?: { provider?: string; model?: string };
+  output?: { usage?: LLMUsage; error?: string };
+}
+
+/**
+ * Reads back log.jsonl's callLLM entries to recover every successful call's
+ * usage — the log is the single source of truth for what actually
+ * happened (FR-007), so cost reporting derives from it rather than a
+ * separately-maintained in-memory tally that could drift from it.
+ */
+export async function recordedCallsFromLog(outDir: string): Promise<RecordedCall[]> {
+  let raw: string;
+  try {
+    raw = await readFile(logPath(outDir), "utf8");
+  } catch {
+    return [];
+  }
+  const calls: RecordedCall[] = [];
+  for (const line of raw.trim().split("\n")) {
+    if (!line) continue;
+    const step = JSON.parse(line) as LoggedCallLLMStep;
+    if (step.tool !== "callLLM" || !step.output?.usage || !step.input?.provider || !step.input?.model) {
+      continue;
+    }
+    calls.push({ provider: step.input.provider, model: step.input.model, usage: step.output.usage });
+  }
+  return calls;
 }

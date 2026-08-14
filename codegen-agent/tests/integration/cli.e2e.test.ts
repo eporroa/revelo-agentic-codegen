@@ -83,9 +83,9 @@ describe("cli end-to-end (llm/ mocked)", () => {
     );
     expect(generatedFile).toContain("WidgetCard");
 
-    // NOTE: report.md is produced by reporter/index.ts (T034/T035, User
-    // Story 3 — not yet implemented at the point US1's T022 lands). The
-    // residual-failure report.md scenario is covered by T036 once it does.
+    const reportMd = await readFile(join(outDir, ".codegen-agent", "report.md"), "utf8");
+    expect(reportMd).toContain("success");
+    expect(reportMd).toContain("Exit code: 0");
   });
 
   it("keeps generation-step context scoped: at least 95% of callLLM log entries omit the full spec + full codebase at once (SC-003)", async () => {

@@ -195,8 +195,11 @@ residual failure) both read back correctly from `report.md`.
       Run Log, and Validation Results; writes `<out>/.codegen-agent/report.md` (tasks, files,
       validation outcome, per-file repair-attempt counts, token usage, estimated cost) per
       data-model.md's Run Report (depends on: T016, T026, T027, T028)
-- [ ] T035 [US3] Wire `src/reporter/index.ts` into `src/cli.ts` as the final orchestration
-      step; the process exit code mirrors the report's outcome (FR-015) (depends on: T029, T034)
+- [X] T035 [US3] Wire `src/reporter/index.ts` into `src/cli.ts` as the final orchestration
+      step; the process exit code mirrors the report's outcome (FR-015) (depends on: T029, T034).
+      Also writes a minimal report.md on a PlanningFailedError, so FR-012's "every run produces
+      a report" holds even when GENERATE is never reached. Fills in T022's deferred report.md
+      assertion.
 - [ ] T036 [P] [US3] Integration test: an engineered residual failure (a `stub-boilerplate`
       fixture variant with its `test` script disabled) produces a `report.md` that names the
       failure and repair-attempt count, and the CLI exits `1`, in

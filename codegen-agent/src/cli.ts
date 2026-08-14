@@ -13,6 +13,8 @@ import { createPlan } from "./planner/index.js";
 import { PlanningFailedError } from "./planner/types.js";
 import { generateAll } from "./generator/index.js";
 import { validateAndRepair } from "./validator/index.js";
+import { buildReport, writeReport } from "./reporter/index.js";
+import { aggregateUsage, recordedCallsFromLog } from "./cost/index.js";
 
 export interface CliOptions {
   spec: string;
@@ -147,6 +149,28 @@ export async function run(argv: string[]): Promise<number> {
   } catch (err) {
     if (err instanceof PlanningFailedError) {
       console.error(`codegen-agent: ${err.message}`);
+      // FR-012 requires a report from every run, including one that never
+      // reached GENERATE — record what planning spent before giving up.
+      const recordedCalls = await recordedCallsFromLog(options.out);
+      const { tokenUsage, estimatedCostUsd } = aggregateUsage(recordedCalls);
+      await writeReport(
+        { writeFile: writeFileTool },
+        buildReport({
+          plan: { tasks: [], createdAt: new Date().toISOString(), specPath: options.spec },
+          validation: {
+            typecheck: { command: "typecheck", passed: false, rawOutput: "", failingFiles: [] },
+            test: {
+              command: "test",
+              passed: false,
+              rawOutput: err.message,
+              failingFiles: [],
+            },
+            repairSummary: [],
+          },
+          tokenUsage,
+          estimatedCostUsd,
+        })
+      );
       return 1;
     }
     throw err;
@@ -169,9 +193,13 @@ export async function run(argv: string[]): Promise<number> {
     plan
   );
 
-  // T034/T035 continues here: build & persist report.md from `plan` + `validation`.
-  const hasResidualFailures = !validation.typecheck.passed || !validation.test.passed;
-  return hasResidualFailures ? 1 : 0; // FR-015
+  // REPORT
+  const recordedCalls = await recordedCallsFromLog(options.out);
+  const { tokenUsage, estimatedCostUsd } = aggregateUsage(recordedCalls);
+  const report = buildReport({ plan, validation, tokenUsage, estimatedCostUsd });
+  await writeReport({ writeFile: writeFileTool }, report);
+
+  return report.exitCode; // FR-015
 }
 
 const isMain =
