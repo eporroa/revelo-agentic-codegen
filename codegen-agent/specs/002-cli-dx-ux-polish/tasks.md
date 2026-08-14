@@ -25,10 +25,10 @@ implementation and testing of each story.
 
 ## Phase 1: Setup (Shared Infrastructure)
 
-- [ ] T001 [P] Add `@clack/prompts` dependency and `tsc-alias` devDependency to
+- [X] T001 [P] Add `@clack/prompts` dependency and `tsc-alias` devDependency to
       `package.json`; change the `build` script to `tsc -p tsconfig.json && tsc-alias -p
       tsconfig.json` (research.md's alias-mechanism decision)
-- [ ] T002 [P] Add `"baseUrl": "."` and `"paths": { "@/*": ["src/*"] }` to `tsconfig.json`
+- [X] T002 [P] Add `"baseUrl": "."` and `"paths": { "@/*": ["src/*"] }` to `tsconfig.json`
 
 ---
 
