@@ -152,7 +152,7 @@ working app in `--out`.
       `generator/` is never invoked (FR-005). Otherwise, process exits `0` only when
       validation finishes with zero unresolved failures (FR-015) (depends on: T018, T026,
       T027, T028)
-- [ ] T030 [US1] Author `codegen-agent/sample-spec.txt` — the reference Car Inventory Manager
+- [X] T030 [US1] Author `codegen-agent/sample-spec.txt` — the reference Car Inventory Manager
       spec (the deliverable input, per plan.md)
 
 **Checkpoint**: User Story 1 is fully functional and independently testable.

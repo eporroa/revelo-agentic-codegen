@@ -1,0 +1,30 @@
+Car Inventory Manager
+
+Build a Car Inventory Manager app on top of the existing boilerplate. A mock GraphQL API is
+already configured (via MSW) with a Car type: id, make, model, year, color, and three image
+URLs (mobile, tablet, desktop) for responsive images. The GraphQL schema already exposes a
+GetCars query, a GetCar(id) query, and an AddCar mutation.
+
+Required features:
+
+1. Display a list of cars fetched via Apollo Client from the GetCars query. Show each car as a
+   Material UI card with make, model, year, color, and its image.
+2. Render the correct image for the current viewport: the mobile image at 640px width and
+   below, the tablet image between 641px and 1023px, and the desktop image at 1024px and
+   above.
+3. Include a search box that filters the visible cars by model as the user types.
+4. Include sorting controls for the car list — by year and by make.
+5. Extract the GraphQL fetching logic into a reusable useCars() hook rather than calling
+   useQuery directly in the list component.
+6. Include an "Add Car" form that submits make, model, year, and color via the AddCar
+   mutation, and shows the newly added car in the list once it succeeds.
+7. Include unit tests for the key components (at minimum, the car list and the search/sort
+   behavior).
+
+Optional, attempt if time allows:
+- Use the GetCar(id) query to support viewing a single car's details.
+- Add a year filter alongside the model search, so both can be applied at once.
+- Combine the search, sort, and year-filter logic into a single useCarFilters() hook.
+
+Out of scope: no backend, no database, no authentication, no deployment. The mock GraphQL API
+provided by the boilerplate is the only data source.
