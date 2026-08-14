@@ -127,11 +127,14 @@ working app in `--out`.
 - [X] T025 [P] [US1] Implement `src/prompts/repair.ts` — structured repair prompt template
       (original task context + failing file + exact error output + "return a corrected full
       file")
-- [ ] T026 [US1] Implement `src/planner/index.ts`: spec text → `Task[]` via one scoped LLM call
+- [X] T026 [US1] Implement `src/planner/index.ts`: spec text → `Task[]` via one scoped LLM call
       using `prompts/plan.ts` + `tools/callLLM`, zod-validates the response (re-prompting on a
       schema mismatch). On success, persists `<out>/.codegen-agent/plan.md`. If retries are
       exhausted or the validated result has zero tasks, throws a typed `PlanningFailedError`
-      instead of returning a `Plan` (FR-005) (depends on: T006, T015, T023)
+      instead of returning a `Plan` (FR-005) (depends on: T006, T015, T023). Also validates
+      dependsOn references and topologically orders tasks, re-prompting on a cyclic/dangling
+      graph. plan.md is rendered as a static pre-generation snapshot (resolves analyze A1 in
+      favor of the US2 reading — final task status lives in report.md, not plan.md).
 - [ ] T027 [US1] Implement `src/generator/index.ts`: walks `Task[]` in dependency order; per
       task, assembles scoped context (dependency file contents via `tools/readFile` + the
       target file's expected interface only — never the full spec or full codebase) using
