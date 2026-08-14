@@ -67,9 +67,9 @@ package root (this repo's root — not nested under `specs/`).
       missing/invalid API key (depends on: T007, T008, T009)
 - [X] T011 [P] Implement the run log writer in `src/tools/runLog.ts` — appends one
       `GenerationStep` JSON line to `<out>/.codegen-agent/log.jsonl` per call (depends on: T006)
-- [ ] T012 [P] Implement `src/tools/writeFile.ts` (writes a file, logs via `runLog`)
-- [ ] T013 [P] Implement `src/tools/readFile.ts` (reads a file, logs via `runLog`)
-- [ ] T014 [P] Implement `src/tools/runShell.ts` — restricted to `install`/`typecheck`/`test`,
+- [X] T012 [P] Implement `src/tools/writeFile.ts` (writes a file, logs via `runLog`)
+- [X] T013 [P] Implement `src/tools/readFile.ts` (reads a file, logs via `runLog`)
+- [X] T014 [P] Implement `src/tools/runShell.ts` — restricted to `install`/`typecheck`/`test`,
       via `node:child_process.execFile`, cwd = `--out`, logs exit code + stdout/stderr
 - [ ] T015 Implement `src/tools/callLLM.ts` — wraps the active `LLMProvider.generate()` with
       bounded retry-with-backoff (max 3 attempts, FR-016) and logs via `runLog` (depends on:
